@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="js/onsenui.min.js"></script>
+    <script type="text/javascript" src="js/codigo.js"></script>
+    <link rel="stylesheet" href="css/onsenui.min.css" />
+    <link rel="stylesheet" href="css/onsen-css-components.min.css" />
+    <title>Ejercicio Onsen</title>
+
+    <style>
+      #container {
+        margin: 0px auto;
+        width: 500px;
+        height: 375px;
+        border: 10px #333 solid;
+      }
+      #videoElement {
+        width: 500px;
+        height: 375px;
+        background-color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- menu -->
+    <ons-splitter>
+      <ons-splitter-side id="menu" side="left" width="220px" collapse swipeable>
+        <ons-page>
+          <ons-list>
+            <ons-list-item onclick="fn.load('home.html')" tappable>
+              Inicio
+            </ons-list-item>
+            <ons-list-item onclick="fn.load('settings.html')" tappable>
+              Opciones
+            </ons-list-item>
+            <ons-list-item onclick="fn.load('about.html')" tappable>
+              Acerca
+            </ons-list-item>
+          </ons-list>
+        </ons-page>
+      </ons-splitter-side>
+      <ons-splitter-content
+        id="content"
+        page="home.html"
+      ></ons-splitter-content>
+    </ons-splitter>
+
+    <!-- pagina inicio -->
+    <template id="home.html">
+      <ons-page>
+        <ons-toolbar>
+          <div class="center">
+            Mantenimiento Vehicular
+          </div>
+        </ons-toolbar>
+        <div
+          id="contenido"
+          style="text-align: center; opacity: 0.6; padding-top: 20px;"
+        >
+          <br />
+          <br />
+          <br />
+          <ons-input
+            modifier="underbar"
+            placeholder="Email"
+            id="email"
+            type="email"
+            min="0"
+            max="20"
+            float
+          ></ons-input
+          ><br />
+          <br />
+          <ons-input
+            modifier="underbar"
+            placeholder="Clave"
+            id="password"
+            type="password"
+            min="0"
+            max="20"
+            float
+          ></ons-input
+          ><br />
+          <br />
+          <br />
+          <ons-button modifier="material" onclick="login()">Ingresar</ons-button
+          ><br />
+          <br />
+          <br />
+          <ons-button
+            modifier="outline light"
+            onclick="fn.load('crearCuenta.html');"
+            >Crear cuenta</ons-button
+          >
+          <p id="mensaje"></p>
+        </div>
+      </ons-page>
+    </template>
+    <!-- nuevo usuario -->
+    <template id="crearCuenta.html">
+      <ons-page>
+        <ons-toolbar>
+          <div class="left">
+            <ons-toolbar-button onclick="fn.open()">
+              <ons-icon icon="md-menu"></ons-icon>
+            </ons-toolbar-button>
+          </div>
+        </ons-toolbar>
+        <div
+          id="contenido"
+          style="text-align: center; opacity: 0.6; padding-top: 20px;"
+        >
+          <br />
+          <br />
+          <br />
+
+          <ons-input
+            modifier="underbar"
+            placeholder="Email"
+            id="email"
+            type="email"
+            min="0"
+            max="20"
+          ></ons-input
+          ><br />
+          <br />
+          <ons-input
+            modifier="underbar"
+            placeholder="Teléfono"
+            id="telefono"
+            type="number"
+            min="0"
+            max="8"
+          ></ons-input
+          ><br />
+          <br />
+          <ons-input
+            modifier="underbar"
+            placeholder="Clave"
+            id="password"
+            type="password"
+            min="0"
+            max="20"
+          ></ons-input
+          ><br />
+          <br />
+          <br />
+          <ons-button modifier="material" onclick="nuevoUsuario()"
+            >Crear cuenta</ons-button
+          >
+        </div>
+      </ons-page>
+    </template>
+    <!-- AGREGAR VEHICULO -->
+    <template id="nuevoVehiculo.html">
+      <ons-page>
+        <ons-toolbar>
+          <div class="left">
+            <ons-toolbar-button onclick="fn.open()">
+              <ons-icon icon="md-menu"></ons-icon>
+            </ons-toolbar-button>
+          </div>
+          <div
+          id="contenido"
+          style="text-align: center; opacity: 0.6; padding-top: 20px;"
+        >
+          <br />
+          <br />
+          <br />
+
+          <ons-input
+            modifier="underbar"
+            placeholder="Matrícula"
+            id="matricula"
+          ></ons-input
+          ><br />
+          <br />
+          <ons-input
+            modifier="underbar"
+            placeholder="Descripción"
+            id="descripcion"
+          ></ons-input
+          ><br />
+          <br />
+          <br />
+          <ons-button modifier="material" onclick="agregarVehiculo()"
+            >AGREGAR VEHÍCULO</ons-button
+          >
+        </div>
+        </ons-toolbar>
+      </ons-page>
+    </template>
+    <!-- acerca -->
+    <template id="opciones.html">
+      <ons-page>
+        <ons-toolbar>
+          <div class="left">
+            <ons-toolbar-button onclick="fn.open()">
+              <ons-icon icon="md-menu"></ons-icon>
+            </ons-toolbar-button>
+          </div>
+          <div class="center">
+            home
+          </div>
+        </ons-toolbar>
+      </ons-page>
+    </template>
+  </body>
+</html>
