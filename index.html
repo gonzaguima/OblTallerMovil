@@ -9,21 +9,8 @@
     <script type="text/javascript" src="js/codigo.js"></script>
     <link rel="stylesheet" href="css/onsenui.min.css" />
     <link rel="stylesheet" href="css/onsen-css-components.min.css" />
-    <title>Ejercicio Onsen</title>
+    <title>Mantenimiento Vehicular</title>
 
-    <style>
-      #container {
-        margin: 0px auto;
-        width: 500px;
-        height: 375px;
-        border: 10px #333 solid;
-      }
-      #videoElement {
-        width: 500px;
-        height: 375px;
-        background-color: #666;
-      }
-    </style>
   </head>
   <body>
     <!-- menu -->
@@ -43,6 +30,7 @@
           </ons-list>
         </ons-page>
       </ons-splitter-side>
+
       <ons-splitter-content
         id="content"
         page="home.html"
@@ -100,6 +88,8 @@
         </div>
       </ons-page>
     </template>
+
+
     <!-- nuevo usuario -->
     <template id="crearCuenta.html">
       <ons-page>
@@ -108,6 +98,9 @@
             <ons-toolbar-button onclick="fn.open()">
               <ons-icon icon="md-menu"></ons-icon>
             </ons-toolbar-button>
+          </div>
+          <div class="center">
+            Crear usuario
           </div>
         </ons-toolbar>
         <div
@@ -125,6 +118,8 @@
             type="email"
             min="0"
             max="20"
+            float
+            required
           ></ons-input
           ><br />
           <br />
@@ -132,9 +127,11 @@
             modifier="underbar"
             placeholder="Teléfono"
             id="telefono"
-            type="number"
+            type="text"
             min="0"
-            max="8"
+            max="20"
+            float
+            required
           ></ons-input
           ><br />
           <br />
@@ -145,6 +142,8 @@
             type="password"
             min="0"
             max="20"
+            float
+            required
           ></ons-input
           ><br />
           <br />
@@ -152,6 +151,8 @@
           <ons-button modifier="material" onclick="nuevoUsuario()"
             >Crear cuenta</ons-button
           >
+          <br>
+          <p id="mensaje"></p>
         </div>
       </ons-page>
     </template>
@@ -164,7 +165,12 @@
               <ons-icon icon="md-menu"></ons-icon>
             </ons-toolbar-button>
           </div>
-          <div
+          <div class="center">
+            Alta vehículo
+          </div>
+        </ons-toolbar>
+
+        <div
           id="contenido"
           style="text-align: center; opacity: 0.6; padding-top: 20px;"
         >
@@ -190,12 +196,14 @@
           <ons-button modifier="material" onclick="agregarVehiculo()"
             >AGREGAR VEHÍCULO</ons-button
           >
+          <p id="mensaje"></p>
         </div>
-        </ons-toolbar>
       </ons-page>
     </template>
-    <!-- acerca -->
-    <template id="opciones.html">
+
+    <!-- búsqueda talleres -->
+
+    <template id="buscarTaller.html">
       <ons-page>
         <ons-toolbar>
           <div class="left">
@@ -204,9 +212,70 @@
             </ons-toolbar-button>
           </div>
           <div class="center">
-            home
+            Buscar taller
           </div>
         </ons-toolbar>
+
+        <div
+          id="contenido"
+          style="text-align: center; opacity: 0.6; padding-top: 20px;"
+        >
+        <!-- agregar mapa y boludeces -->
+        mapa
+        </div>
+      </ons-page>
+    </template>
+
+    <!-- listado mantenimientos -->
+
+    <template id="listarMant.html">
+      <ons-page>
+        <ons-toolbar>
+          <div class="left">
+            <ons-toolbar-button onclick="fn.open()">
+              <ons-icon icon="md-menu"></ons-icon>
+            </ons-toolbar-button>
+          </div>
+          <div class="center">
+            Listado de mantenimientos
+          </div>
+        </ons-toolbar>
+
+        <div
+          id="contenido"
+          style="text-align: center; opacity: 0.6; padding-top: 20px;"
+        >
+        <!-- agregar listado -->
+        <p>ddl</p>
+        <ons-fab position="bottom right" onclick="agregarMantenimiento()">
+          <ons-icon icon="md-plus"></ons-icon>
+        </ons-fab>
+        </div>
+      </ons-page>
+    </template>
+
+
+    <!-- acerca -->
+    <template id="principal.html">
+      <ons-page>
+        <ons-toolbar>
+          <div class="left">
+            <ons-toolbar-button onclick="fn.open()">
+              <ons-icon icon="md-menu"></ons-icon>
+            </ons-toolbar-button>
+          </div>
+          <div class="center">
+            Bienvenido <span id="logueado"></span>
+          </div>
+        </ons-toolbar>
+        <div class="center">
+        <p>Selección de funcionalidades</p>
+
+            <ons-button modifier="large" style="margin-top:15px" onclick="fn.load('nuevoVehiculo.html')">Alta Vehículo</ons-button>
+            <ons-button modifier="large" style="margin-top:15px" onclick="fn.load('buscarTaller.html')">Búsqueda Talleres</ons-button>
+            <ons-button modifier="large" style="margin-top:15px" onclick="fn.load('listarMant.html')">Listado Mantenimientos</ons-button>
+            <ons-button modifier="large--quiet" onclick="logout()">LOGOUT</ons-button>
+        </div>
       </ons-page>
     </template>
   </body>
