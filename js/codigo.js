@@ -134,15 +134,10 @@ function agregarMantenimiento(){
 
 //LOGOUT
 function logout(){
-    var query = {
-        "Authorization": key,
-    };
-    var q = JSON.stringify(query);
     $.ajax({
         url: "http://api.marcelocaiafa.com/logout",
         type: "POST",
-        dataType: "JSON",
-        data: q,
+        headers: {"Authorization": key},
         success: correctoLogout,
         error: errorLogout
     });
