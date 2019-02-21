@@ -101,30 +101,28 @@ function agregarVehiculo(){
        }
     var q = JSON.stringify(query);
     if(matricula != "" && descripcion != ""){
-        //verificar no existe, crear nuevo y loguearlo
-        //desactivar acceso a otras secciones por el menu
         $.ajax({
             url: "http://api.marcelocaiafa.com/vehiculo",
             type: "POST",
             dataType: "JSON",
             data: q,
+            headers: {"Authorization": key},
             success: correctoVehiculo,
             error: errorVehiculo
         });
     }else{
-        mensaje = "Debe completar todos los datos";
+        $("#mensaje").text("Debe completar todos los datos");
     }
-    $("#mensaje").text(mensaje);
-}
+   }
 
 //CORRECTO VEHICULO
 function correctoVehiculo(){
-
+    $("#mensaje").text("El vehículo fue agregado correctamente");
 }
 
 //ERROR VEHICULO
 function errorVehiculo(){
-
+    $("#mensaje").text("El vehículo no se pudo agregar");
 }
 
 //AGREGAR MANTENIMIENTO
