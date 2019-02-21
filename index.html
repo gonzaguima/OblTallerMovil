@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="css/onsenui.min.css" />
     <link rel="stylesheet" href="css/onsen-css-components.min.css" />
     <title>Mantenimiento Vehicular</title>
-
   </head>
   <body>
     <!-- menu -->
@@ -89,7 +88,6 @@
       </ons-page>
     </template>
 
-
     <!-- nuevo usuario -->
     <template id="crearCuenta.html">
       <ons-page>
@@ -151,7 +149,7 @@
           <ons-button modifier="material" onclick="nuevoUsuario()"
             >Crear cuenta</ons-button
           >
-          <br>
+          <br />
           <p id="mensaje"></p>
         </div>
       </ons-page>
@@ -220,8 +218,8 @@
           id="contenido"
           style="text-align: center; opacity: 0.6; padding-top: 20px;"
         >
-        <!-- agregar mapa y boludeces -->
-        mapa
+          <!-- agregar mapa y boludeces -->
+          mapa
         </div>
       </ons-page>
     </template>
@@ -245,15 +243,14 @@
           id="contenido"
           style="text-align: center; opacity: 0.6; padding-top: 20px;"
         >
-        <!-- agregar listado -->
-        <p>ddl</p>
-        <ons-fab position="bottom right" onclick="agregarMantenimiento()">
-          <ons-icon icon="md-plus"></ons-icon>
-        </ons-fab>
+          <!-- agregar listado -->
+          <p>ddl</p>
+          <ons-fab position="bottom right" onclick="agregarMantenimiento()">
+            <ons-icon icon="md-plus"></ons-icon>
+          </ons-fab>
         </div>
       </ons-page>
     </template>
-
 
     <!-- acerca -->
     <template id="principal.html">
@@ -269,13 +266,30 @@
           </div>
         </ons-toolbar>
         <div class="center">
-        <p>Selección de funcionalidades</p>
+          <p>Selección de funcionalidades</p>
 
-            <ons-button modifier="large" style="margin-top:15px" onclick="fn.load('nuevoVehiculo.html')">Alta Vehículo</ons-button>
-            <ons-button modifier="large" style="margin-top:15px" onclick="fn.load('buscarTaller.html')">Búsqueda Talleres</ons-button>
-            <ons-button modifier="large" style="margin-top:15px" onclick="fn.load('listarMant.html')">Listado Mantenimientos</ons-button>
-            <ons-button modifier="large--quiet" onclick="logout()">LOGOUT</ons-button>
-            <p id="mensaje"></p>
+          <ons-button
+            modifier="large"
+            style="margin-top:15px"
+            onclick="fn.load('nuevoVehiculo.html')"
+            >Alta Vehículo</ons-button
+          >
+          <ons-button
+            modifier="large"
+            style="margin-top:15px"
+            onclick="fn.load('buscarTaller.html')"
+            >Búsqueda Talleres</ons-button
+          >
+          <ons-button
+            modifier="large"
+            style="margin-top:15px"
+            onclick="fn.load('listarMant.html')"
+            >Listado Mantenimientos</ons-button
+          >
+          <ons-button modifier="large--quiet" onclick="logout()"
+            >LOGOUT</ons-button
+          >
+          <p id="mensaje"></p>
         </div>
       </ons-page>
     </template>
