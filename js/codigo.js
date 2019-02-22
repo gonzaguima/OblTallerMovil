@@ -165,12 +165,40 @@ window.fn.load = function(page) {
   content.load(page).then(menu.close.bind(menu));
 };
 
+//LISTAR SERVICIOS
+function listarServicios(){
+    var key = sessionStorage.getItem('key')
+  $.ajax({
+    url: "http://api.marcelocaiafa.com/servicio",
+    type: "GET",
+    headers: { Authorization: key },
+    success: correctoServicios,
+    error: errorServicios
+  });
+  console.log("entra");
+}
+
+//CARGA SERVICIOS
+function correctoServicios(response){
+    console.log("carga de servicios ok")
+    response.description.forEach(function (r, i) {
+        $("#servicios").append('<option value=\'' + r.id + '\'>' + r.nombre + '</option>');
+    });
+}
+//ERROR CARGA SERVICIOS
+function errorServicios(response){
+    console.log("carga de servicios fallo");
+}
 
 //CARGAR MAPA
+var map;
+var directionDisplay;
+var directionService;
 function initMap() {
-
-    navigator.geolocation.getCurrentPosition(MostrarUbicacion, MostrarError);
+    navigator.geolocation.getCurrentPosition(MostrarUbicacion, MostrarError, { enableHighAccuracy: true });
 }
+
+
 //ERROR MAPA
 function MostrarError() {
     ons.notification.alert("La ubicación no es correcta");
@@ -178,44 +206,61 @@ function MostrarError() {
 
 //CORRECTO MAPA
 function MostrarUbicacion(pos) {    
-  
+    listarServicios();
     var crd = pos.coords;    
     var latitud = parseFloat(crd.latitude);   
     var longitud = parseFloat(crd.longitude);   
     
     map = new google.maps.Map(document.getElementById('map'), {
         center: { lat: latitud, lng: longitud },
-        zoom: 19
+        zoom: 13
     });
     var marker = new google.maps.Marker({
         position: { lat: latitud, lng: longitud },
         map: map,
         title: 'Mi ubicacion',
     });
+  agregarEvento(marker);
+}
 
-    agregarEvento(marker);
-    
-    var latitud= -34.9038526;
-    var longitud= -56.1905803;
-    marker = new google.maps.Marker({
-        position: { lat: latitud, lng: longitud },
-        map: map,
-        title: 'Universidad ORT Uruguay'
+function agregarEvento(marker) {
+    var infowindow = new google.maps.InfoWindow({
+      content: marker.getTitle() + marker.getPosition()
     });
-    agregarEvento(marker);
 
-    directionDisplay = new google.maps.DirectionsRenderer();
-    directionService = new google.maps.DirectionsService();
+    marker.addListener('click', function() {
+      infowindow.open(marker.get('map'), marker);
+    });
+}
 
-    request={
-        origin:{lat:-34.9038526, lng:-56.1905803},
-        destination:{lat:parseFloat(crd.latitude),lng:parseFloat(crd.longitude)},
-        travelMode:'DRIVING'
-    };
-    directionService.route(request, function(result,status){
-        if(status=='OK'){
-            directionDisplay.setDirections(result);
-        }
-    })
-    directionDisplay.setMap(map);
+//CARGAR TALLERES FILTRADOS
+function cargarTalleres(){
+    var sel = $("#servicios").val();
+    var key = sessionStorage.getItem('key')
+    var q = "http://api.marcelocaiafa.com/taller/?servicio=" + sel;
+    $.ajax({
+        url: q,
+        type: "GET",
+        headers: { Authorization: key },
+        success: mostrarTalleres,
+        error: errorTalleres
+      });
+}
+
+//CORRECTO MOSTRAR TALLERES
+function mostrarTalleres(response){
+    $("#talleres").html("");
+        response.description.forEach(function (r, i) {
+            $("#talleres").append(
+                "<h3>" + r.descripcion + "</h3>" + 
+                "<p> Dirección: " + r.direccion + "</p>" +
+                "<p> Teléfono: " + r.telefono + "</p>" +
+                "<hr>"
+                );
+        });
+        
+    }    
+
+function errorTalleres(){
+    console.log("error carga talleres");
 }

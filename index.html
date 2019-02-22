@@ -203,6 +203,26 @@
 
     <template id="buscarTaller.html">
       <ons-page>
+          <script
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhfTvXeR1_KtzXelJWoMu64w9RaZ7bmE8&callback=initMap"
+          async defer>
+          listarServicios();
+          </script>
+      <style>               
+
+          html,
+          body {
+              height: 100%;
+              margin: 0;
+              padding: 0;
+          }
+
+          #map {
+              float: left;
+              width: 100%;
+              height: 400px;
+          }
+      </style>
         <ons-toolbar>
           <div class="left">
             <ons-toolbar-button onclick="fn.open()">
@@ -215,11 +235,18 @@
         </ons-toolbar>
 
         <div
-          id="contenido"
-          style="text-align: center; opacity: 0.6; padding-top: 20px;"
+          id="contenido center"
         >
-          <!-- agregar mapa y boludeces -->
-          mapa
+          <!-- mapa -->
+          <div id="map">
+          </div>
+            <!-- select servicio -->
+          <ons-select class="select" onchange="cargarTalleres(event)">
+            <select class="select-input" id="servicios"></select>
+          </ons-select>
+          
+          <!-- talleres seleccionados -->
+          <div id="talleres"></div>
         </div>
       </ons-page>
     </template>
