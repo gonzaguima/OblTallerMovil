@@ -142,7 +142,7 @@ function logout() {
 
 //CORRECTO LOGOUT
 function correctoLogout() {
-    storage.removeItem("key");
+    sessionStorage.removeItem("key");
   fn.load("home.html");
 }
 
@@ -194,6 +194,8 @@ function errorServicios(response){
 var map;
 var directionDisplay;
 var directionService;
+var latlng = [];
+
 function initMap() {
     navigator.geolocation.getCurrentPosition(MostrarUbicacion, MostrarError, { enableHighAccuracy: true });
 }
@@ -205,12 +207,12 @@ function MostrarError() {
 }
 
 //CORRECTO MAPA
-function MostrarUbicacion(pos) {    
+function MostrarUbicacion(pos) {
     listarServicios();
-    var crd = pos.coords;    
-    var latitud = parseFloat(crd.latitude);   
-    var longitud = parseFloat(crd.longitude);   
-    
+    var crd = pos.coords;
+    var latitud = parseFloat(crd.latitude);
+    var longitud = parseFloat(crd.longitude);
+
     map = new google.maps.Map(document.getElementById('map'), {
         center: { lat: latitud, lng: longitud },
         zoom: 13
@@ -248,18 +250,33 @@ function cargarTalleres(){
 }
 
 //CORRECTO MOSTRAR TALLERES
+
 function mostrarTalleres(response){
     $("#talleres").html("");
-        response.description.forEach(function (r, i) {
+    response.description.forEach(function (r, i) {
             $("#talleres").append(
-                "<h3>" + r.descripcion + "</h3>" + 
+                "<h3>" + r.descripcion + "</h3>" +
                 "<p> Dirección: " + r.direccion + "</p>" +
                 "<p> Teléfono: " + r.telefono + "</p>" +
                 "<hr>"
                 );
+                var lat = parseFloat(r.lat);
+                var lng = parseFloat(r.lng);
+                var marker = new google.maps.Marker({
+                  position: { lat:lat, lng:lng },
+                  map: map,
+                  title: r.descripcion,
+                });
+                agregarEvento(marker);
+                latlng.push(new google.maps.LatLng(lat, lng));
         });
-        
-    }    
+
+        var latlngbounds = new google.maps.LatLngBounds();
+        for (var i = 0; i < latlng.length; i++) {
+          latlngbounds.extend(latlng[i]);
+        }
+        map.fitBounds(latlngbounds);
+}
 
 function errorTalleres(){
     console.log("error carga talleres");
