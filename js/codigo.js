@@ -93,20 +93,23 @@ function agregarVehiculo() {
   var matricula = $("#matricula").val();
   var desc = $("#descripcion").val();
   var mensaje = "";
+  var logueado = sessionStorage.getItem('logueado');
   var query = {
     matricula: matricula,
     descripcion: desc,
-    usuario: logueado.id
+    usuario: logueado
   };
   var q = JSON.stringify(query);
   if (matricula != "" && descripcion != "") {
-    var key = sessionStorage.getItem('key')
+    var key = sessionStorage.getItem('key');
     $.ajax({
       url: "http://api.marcelocaiafa.com/vehiculo",
       type: "POST",
       dataType: "JSON",
       data: q,
-      headers: { Authorization: key },
+      headers: {
+        Authorization: key
+      },
       success: correctoVehiculo,
       error: errorVehiculo
     });
@@ -130,11 +133,13 @@ function agregarMantenimiento() {}
 
 //LOGOUT
 function logout() {
-    var key = sessionStorage.getItem('key')
+  var key = sessionStorage.getItem('key')
   $.ajax({
     url: "http://api.marcelocaiafa.com/logout",
     type: "POST",
-    headers: { Authorization: key },
+    headers: {
+      Authorization: key
+    },
     success: correctoLogout,
     error: errorLogout
   });
@@ -142,7 +147,7 @@ function logout() {
 
 //CORRECTO LOGOUT
 function correctoLogout() {
-    sessionStorage.removeItem("key");
+  sessionStorage.removeItem("key");
   fn.load("home.html");
 }
 
@@ -153,25 +158,25 @@ function errorLogout() {
 
 //MENU
 window.fn = {};
-
-window.fn.open = function() {
+window.fn.open = function () {
   var menu = document.getElementById("menu");
   menu.open();
 };
-
-window.fn.load = function(page) {
+window.fn.load = function (page) {
   var content = document.getElementById("content");
   var menu = document.getElementById("menu");
   content.load(page).then(menu.close.bind(menu));
 };
 
 //LISTAR SERVICIOS
-function listarServicios(){
-    var key = sessionStorage.getItem('key')
+function listarServicios() {
+  var key = sessionStorage.getItem('key')
   $.ajax({
     url: "http://api.marcelocaiafa.com/servicio",
     type: "GET",
-    headers: { Authorization: key },
+    headers: {
+      Authorization: key
+    },
     success: correctoServicios,
     error: errorServicios
   });
@@ -179,15 +184,15 @@ function listarServicios(){
 }
 
 //CARGA SERVICIOS
-function correctoServicios(response){
-    console.log("carga de servicios ok")
-    response.description.forEach(function (r, i) {
-        $("#servicios").append('<option value=\'' + r.id + '\'>' + r.nombre + '</option>');
-    });
+function correctoServicios(response) {
+  console.log("carga de servicios ok")
+  response.description.forEach(function (r, i) {
+    $("#servicios").append('<option value=\'' + r.id + '\'>' + r.nombre + '</option>');
+  });
 }
 //ERROR CARGA SERVICIOS
-function errorServicios(response){
-    console.log("carga de servicios fallo");
+function errorServicios(response) {
+  console.log("carga de servicios fallo");
 }
 
 //CARGAR MAPA
@@ -195,89 +200,140 @@ var map;
 var directionDisplay;
 var directionService;
 var latlng = [];
+var markers = [];
 
 function initMap() {
-    navigator.geolocation.getCurrentPosition(MostrarUbicacion, MostrarError, { enableHighAccuracy: true });
+  navigator.geolocation.getCurrentPosition(MostrarUbicacion, MostrarError, {
+    enableHighAccuracy: true
+  });
 }
 
 
 //ERROR MAPA
 function MostrarError() {
-    ons.notification.alert("La ubicación no es correcta");
+  ons.notification.alert("La ubicación no es correcta");
 }
-
+var crd;
 //CORRECTO MAPA
 function MostrarUbicacion(pos) {
-    listarServicios();
-    var crd = pos.coords;
-    var latitud = parseFloat(crd.latitude);
-    var longitud = parseFloat(crd.longitude);
+  listarServicios();
+  crd = pos.coords;
+  var latitud = parseFloat(crd.latitude);
+  var longitud = parseFloat(crd.longitude);
 
-    map = new google.maps.Map(document.getElementById('map'), {
-        center: { lat: latitud, lng: longitud },
-        zoom: 13
-    });
-    var marker = new google.maps.Marker({
-        position: { lat: latitud, lng: longitud },
-        map: map,
-        title: 'Mi ubicacion',
-    });
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: {
+      lat: latitud,
+      lng: longitud
+    },
+    zoom: 13
+  });
+  var marker = new google.maps.Marker({
+    position: {
+      lat: latitud,
+      lng: longitud
+    },
+    map: map,
+    title: 'Mi ubicación',
+  });
   agregarEvento(marker);
 }
-
+//AGREGAR EVENTO
 function agregarEvento(marker) {
-    var infowindow = new google.maps.InfoWindow({
-      content: marker.getTitle() + marker.getPosition()
-    });
+  var infowindow = new google.maps.InfoWindow({
+    content: "<h4>" + marker.getTitle() + "</h4>" + "<br />" +
+      '<ons-button modifier="material" onclick="mostrarRuta(' + marker.getPosition().lat() + "," + marker.getPosition().lng() + ')">IR</ons-button>'
+  });
 
-    marker.addListener('click', function() {
-      infowindow.open(marker.get('map'), marker);
-    });
+  marker.addListener('click', function () {
+    infowindow.open(marker.get('map'), marker);
+  });
 }
 
 //CARGAR TALLERES FILTRADOS
-function cargarTalleres(){
-    var sel = $("#servicios").val();
-    var key = sessionStorage.getItem('key')
-    var q = "http://api.marcelocaiafa.com/taller/?servicio=" + sel;
-    $.ajax({
-        url: q,
-        type: "GET",
-        headers: { Authorization: key },
-        success: mostrarTalleres,
-        error: errorTalleres
-      });
+function cargarTalleres() {
+  var sel = $("#servicios").val();
+  var key = sessionStorage.getItem('key')
+  var q = "http://api.marcelocaiafa.com/taller/?servicio=" + sel;
+  $.ajax({
+    url: q,
+    type: "GET",
+    headers: {
+      Authorization: key
+    },
+    success: mostrarTalleres,
+    error: errorTalleres
+  });
 }
 
 //CORRECTO MOSTRAR TALLERES
+function mostrarTalleres(response) {
+  $("#talleres").html("");
+  borrarMarcadores();
+  response.description.forEach(function (r, i) {
+    $("#talleres").append(
+      "<h3>" + r.descripcion + "</h3>" +
+      '<img src="http://images.marcelocaiafa.com/' + r.imagen + '" style="height:100px; width:auto;" alt="imagen">' +
+      "<p> Dirección: " + r.direccion + "</p>" +
+      "<p> Teléfono: " + r.telefono + "</p>" +
+      "<hr>"
+    );
+    var lat = parseFloat(r.lat);
+    var lng = parseFloat(r.lng);
+    var marker = new google.maps.Marker({
+      position: {
+        lat: lat,
+        lng: lng
+      },
+      map: map,
+      title: r.descripcion,
+    });
+    agregarEvento(marker);
+    markers[i] = marker;
+    latlng.push(new google.maps.LatLng(lat, lng));
+  });
 
-function mostrarTalleres(response){
-    $("#talleres").html("");
-    response.description.forEach(function (r, i) {
-            $("#talleres").append(
-                "<h3>" + r.descripcion + "</h3>" +
-                "<p> Dirección: " + r.direccion + "</p>" +
-                "<p> Teléfono: " + r.telefono + "</p>" +
-                "<hr>"
-                );
-                var lat = parseFloat(r.lat);
-                var lng = parseFloat(r.lng);
-                var marker = new google.maps.Marker({
-                  position: { lat:lat, lng:lng },
-                  map: map,
-                  title: r.descripcion,
-                });
-                agregarEvento(marker);
-                latlng.push(new google.maps.LatLng(lat, lng));
-        });
-
-        var latlngbounds = new google.maps.LatLngBounds();
-        for (var i = 0; i < latlng.length; i++) {
-          latlngbounds.extend(latlng[i]);
-        }
-        map.fitBounds(latlngbounds);
+  var latlngbounds = new google.maps.LatLngBounds();
+  for (var i = 0; i < latlng.length; i++) {
+    latlngbounds.extend(latlng[i]);
+  }
+  map.fitBounds(latlngbounds);
+}
+//ERROR CARGA TALLERES
+function errorTalleres() {
+  console.log("error carga talleres");
+}
+//BORRAR MARCADORES
+function borrarMarcadores() {
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(null);
+  }
+  markers.length = 0;
+  latlngbounds = new google.maps.LatLngBounds();
 }
 
-function errorTalleres(){
-    console.log("error carga talleres");
+//MOSTRAR RUTA
+function mostrarRuta(mlat, mlng) {
+  console.log("entra " + mlat+ " " +  mlng);
+  directionDisplay = new google.maps.DirectionsRenderer();
+  directionService = new google.maps.DirectionsService();
+
+  request = {
+    origin: {
+      lat: parseFloat(crd.latitude),
+      lng: parseFloat(crd.longitude)
+    },
+    destination: {
+      lat: parseFloat(mlat),
+      lng: parseFloat(mlng)
+    },
+    travelMode: 'DRIVING'
+  };
+  directionService.route(request, function (result, status) {
+    if (status == 'OK') {
+      directionDisplay.setDirections(result);
+    }
+  })
+  directionDisplay.setMap(map);
+
 }

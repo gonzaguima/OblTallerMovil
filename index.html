@@ -1,324 +1,229 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="js/onsenui.min.js"></script>
-    <script type="text/javascript" src="js/codigo.js"></script>
-    <link rel="stylesheet" href="css/onsenui.min.css" />
-    <link rel="stylesheet" href="css/onsen-css-components.min.css" />
-    <title>Mantenimiento Vehicular</title>
-  </head>
-  <body>
-    <!-- menu -->
-    <ons-splitter>
-      <ons-splitter-side id="menu" side="left" width="220px" collapse swipeable>
-        <ons-page>
-          <ons-list>
-            <ons-list-item onclick="fn.load('home.html')" tappable>
-              Inicio
-            </ons-list-item>
-            <ons-list-item onclick="fn.load('settings.html')" tappable>
-              Opciones
-            </ons-list-item>
-            <ons-list-item onclick="fn.load('about.html')" tappable>
-              Acerca
-            </ons-list-item>
-          </ons-list>
-        </ons-page>
-      </ons-splitter-side>
 
-      <ons-splitter-content
-        id="content"
-        page="home.html"
-      ></ons-splitter-content>
-    </ons-splitter>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+  <script type="text/javascript" src="js/onsenui.min.js"></script>
+  <script type="text/javascript" src="js/codigo.js"></script>
+  <link rel="stylesheet" href="css/onsenui.min.css" />
+  <link rel="stylesheet" href="css/onsen-css-components.min.css" />
+  <title>Mantenimiento Vehicular</title>
+</head>
 
-    <!-- pagina inicio -->
-    <template id="home.html">
+<body>
+  <!-- menu -->
+  <ons-splitter>
+    <ons-splitter-side id="menu" side="left" width="220px" collapse swipeable>
       <ons-page>
-        <ons-toolbar>
-          <div class="center">
-            Mantenimiento Vehicular
-          </div>
-        </ons-toolbar>
-        <div
-          id="contenido"
-          style="text-align: center; opacity: 0.6; padding-top: 20px;"
-        >
-          <br />
-          <br />
-          <br />
-          <ons-input
-            modifier="underbar"
-            placeholder="Email"
-            id="email"
-            type="email"
-            min="0"
-            max="20"
-            float
-          ></ons-input
-          ><br />
-          <br />
-          <ons-input
-            modifier="underbar"
-            placeholder="Clave"
-            id="password"
-            type="password"
-            min="0"
-            max="20"
-            float
-          ></ons-input
-          ><br />
-          <br />
-          <br />
-          <ons-button modifier="material" onclick="login()">Ingresar</ons-button
-          ><br />
-          <br />
-          <br />
-          <ons-button
-            modifier="outline light"
-            onclick="fn.load('crearCuenta.html');"
-            >Crear cuenta</ons-button
-          >
-          <p id="mensaje"></p>
-        </div>
+        <ons-list>
+          <ons-list-item onclick="fn.load('principal.html')" tappable>
+            Página principal
+          </ons-list-item>
+          <ons-list-item onclick="fn.load('nuevoVehiculo.html')" tappable>
+            Agregar vehículo
+          </ons-list-item>
+          <ons-list-item onclick="fn.load('buscarTaller.html')" tappable>
+            Buscar talleres
+          </ons-list-item>
+          <ons-list-item onclick="fn.load('listarMant.html')" tappable>
+            Ver mantenimientos
+          </ons-list-item>
+        </ons-list>
       </ons-page>
-    </template>
+    </ons-splitter-side>
 
-    <!-- nuevo usuario -->
-    <template id="crearCuenta.html">
-      <ons-page>
-        <ons-toolbar>
-          <div class="left">
-            <ons-toolbar-button onclick="fn.open()">
-              <ons-icon icon="md-menu"></ons-icon>
-            </ons-toolbar-button>
-          </div>
-          <div class="center">
-            Crear usuario
-          </div>
-        </ons-toolbar>
-        <div
-          id="contenido"
-          style="text-align: center; opacity: 0.6; padding-top: 20px;"
-        >
-          <br />
-          <br />
-          <br />
+    <ons-splitter-content id="content" page="home.html"></ons-splitter-content>
+  </ons-splitter>
 
-          <ons-input
-            modifier="underbar"
-            placeholder="Email"
-            id="email"
-            type="email"
-            min="0"
-            max="20"
-            float
-            required
-          ></ons-input
-          ><br />
-          <br />
-          <ons-input
-            modifier="underbar"
-            placeholder="Teléfono"
-            id="telefono"
-            type="text"
-            min="0"
-            max="20"
-            float
-            required
-          ></ons-input
-          ><br />
-          <br />
-          <ons-input
-            modifier="underbar"
-            placeholder="Clave"
-            id="password"
-            type="password"
-            min="0"
-            max="20"
-            float
-            required
-          ></ons-input
-          ><br />
-          <br />
-          <br />
-          <ons-button modifier="material" onclick="nuevoUsuario()"
-            >Crear cuenta</ons-button
-          >
-          <br />
-          <p id="mensaje"></p>
-        </div>
-      </ons-page>
-    </template>
-    <!-- AGREGAR VEHICULO -->
-    <template id="nuevoVehiculo.html">
-      <ons-page>
-        <ons-toolbar>
-          <div class="left">
-            <ons-toolbar-button onclick="fn.open()">
-              <ons-icon icon="md-menu"></ons-icon>
-            </ons-toolbar-button>
-          </div>
-          <div class="center">
-            Alta vehículo
-          </div>
-        </ons-toolbar>
-
-        <div
-          id="contenido"
-          style="text-align: center; opacity: 0.6; padding-top: 20px;"
-        >
-          <br />
-          <br />
-          <br />
-
-          <ons-input
-            modifier="underbar"
-            placeholder="Matrícula"
-            id="matricula"
-          ></ons-input
-          ><br />
-          <br />
-          <ons-input
-            modifier="underbar"
-            placeholder="Descripción"
-            id="descripcion"
-          ></ons-input
-          ><br />
-          <br />
-          <br />
-          <ons-button modifier="material" onclick="agregarVehiculo()"
-            >AGREGAR VEHÍCULO</ons-button
-          >
-          <p id="mensaje"></p>
-        </div>
-      </ons-page>
-    </template>
-
-    <!-- búsqueda talleres -->
-
-    <template id="buscarTaller.html">
-      <ons-page>
-          <script
-          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhfTvXeR1_KtzXelJWoMu64w9RaZ7bmE8&callback=initMap"
-          async defer>
-          listarServicios();
-          </script>
-      <style>               
-
-          html,
-          body {
-              height: 100%;
-              margin: 0;
-              padding: 0;
-          }
-
-          #map {
-              float: left;
-              width: 100%;
-              height: 400px;
-          }
-      </style>
-        <ons-toolbar>
-          <div class="left">
-            <ons-toolbar-button onclick="fn.open()">
-              <ons-icon icon="md-menu"></ons-icon>
-            </ons-toolbar-button>
-          </div>
-          <div class="center">
-            Buscar taller
-          </div>
-        </ons-toolbar>
-
-        <div
-          id="contenido center"
-        >
-          <!-- mapa -->
-          <div id="map">
-          </div>
-            <!-- select servicio -->
-          <ons-select class="select" onchange="cargarTalleres(event)">
-            <select class="select-input" id="servicios"></select>
-          </ons-select>
-          
-          <!-- talleres seleccionados -->
-          <div id="talleres"></div>
-        </div>
-      </ons-page>
-    </template>
-
-    <!-- listado mantenimientos -->
-
-    <template id="listarMant.html">
-      <ons-page>
-        <ons-toolbar>
-          <div class="left">
-            <ons-toolbar-button onclick="fn.open()">
-              <ons-icon icon="md-menu"></ons-icon>
-            </ons-toolbar-button>
-          </div>
-          <div class="center">
-            Listado de mantenimientos
-          </div>
-        </ons-toolbar>
-
-        <div
-          id="contenido"
-          style="text-align: center; opacity: 0.6; padding-top: 20px;"
-        >
-          <!-- agregar listado -->
-          <p>ddl</p>
-          <ons-fab position="bottom right" onclick="agregarMantenimiento()">
-            <ons-icon icon="md-plus"></ons-icon>
-          </ons-fab>
-        </div>
-      </ons-page>
-    </template>
-
-    <!-- acerca -->
-    <template id="principal.html">
-      <ons-page>
-        <ons-toolbar>
-          <div class="left">
-            <ons-toolbar-button onclick="fn.open()">
-              <ons-icon icon="md-menu"></ons-icon>
-            </ons-toolbar-button>
-          </div>
-          <div class="center">
-            Bienvenido
-          </div>
-        </ons-toolbar>
+  <!-- pagina inicio -->
+  <template id="home.html">
+    <ons-page>
+      <ons-toolbar>
         <div class="center">
-          <p>Selección de funcionalidades</p>
-
-          <ons-button
-            modifier="large"
-            style="margin-top:15px"
-            onclick="fn.load('nuevoVehiculo.html')"
-            >Alta Vehículo</ons-button
-          >
-          <ons-button
-            modifier="large"
-            style="margin-top:15px"
-            onclick="fn.load('buscarTaller.html')"
-            >Búsqueda Talleres</ons-button
-          >
-          <ons-button
-            modifier="large"
-            style="margin-top:15px"
-            onclick="fn.load('listarMant.html')"
-            >Listado Mantenimientos</ons-button
-          >
-          <ons-button modifier="large--quiet" onclick="logout()"
-            >LOGOUT</ons-button
-          >
-          <p id="mensaje"></p>
+          Mantenimiento Vehicular
         </div>
-      </ons-page>
-    </template>
-  </body>
+      </ons-toolbar>
+      <div id="contenido" style="text-align: center; opacity: 0.6; padding-top: 20px;">
+        <br />
+        <br />
+        <br />
+        <ons-input modifier="underbar" placeholder="Email" id="email" type="email" min="0" max="20" float></ons-input><br />
+        <br />
+        <ons-input modifier="underbar" placeholder="Clave" id="password" type="password" min="0" max="20" float></ons-input><br />
+        <br />
+        <br />
+        <ons-button modifier="material" onclick="login()">Ingresar</ons-button><br />
+        <br />
+        <br />
+        <ons-button modifier="outline light" onclick="fn.load('crearCuenta.html');">Crear cuenta</ons-button>
+        <p id="mensaje"></p>
+      </div>
+    </ons-page>
+  </template>
+
+  <!-- nuevo usuario -->
+  <template id="crearCuenta.html">
+    <ons-page>
+      <ons-toolbar>
+        <div class="left">
+          <ons-toolbar-button onclick="fn.open()">
+            <ons-icon icon="md-menu"></ons-icon>
+          </ons-toolbar-button>
+        </div>
+        <div class="center">
+          Crear usuario
+        </div>
+      </ons-toolbar>
+      <div id="contenido" style="text-align: center; opacity: 0.6; padding-top: 20px;">
+        <br />
+        <br />
+        <br />
+
+        <ons-input modifier="underbar" placeholder="Email" id="email" type="email" min="0" max="20" float required></ons-input><br />
+        <br />
+        <ons-input modifier="underbar" placeholder="Teléfono" id="telefono" type="text" min="0" max="20" float required></ons-input><br />
+        <br />
+        <ons-input modifier="underbar" placeholder="Clave" id="password" type="password" min="0" max="20" float
+          required></ons-input><br />
+        <br />
+        <br />
+        <ons-button modifier="material" onclick="nuevoUsuario()">Crear cuenta</ons-button>
+        <br />
+        <p id="mensaje"></p>
+      </div>
+    </ons-page>
+  </template>
+  <!-- AGREGAR VEHICULO -->
+  <template id="nuevoVehiculo.html">
+    <ons-page>
+      <ons-toolbar>
+        <div class="left">
+          <ons-toolbar-button onclick="fn.open()">
+            <ons-icon icon="md-menu"></ons-icon>
+          </ons-toolbar-button>
+        </div>
+        <div class="center">
+          Alta vehículo
+        </div>
+      </ons-toolbar>
+
+      <div id="contenido" style="text-align: center; opacity: 0.6; padding-top: 20px;">
+        <br />
+        <br />
+        <br />
+
+        <ons-input modifier="underbar" placeholder="Matrícula" id="matricula"></ons-input><br />
+        <br />
+        <ons-input modifier="underbar" placeholder="Descripción" id="descripcion"></ons-input><br />
+        <br />
+        <br />
+        <ons-button modifier="material" onclick="agregarVehiculo()">AGREGAR VEHÍCULO</ons-button>
+        <p id="mensaje"></p>
+      </div>
+    </ons-page>
+  </template>
+
+  <!-- búsqueda talleres -->
+
+  <template id="buscarTaller.html">
+    <ons-page>
+      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhfTvXeR1_KtzXelJWoMu64w9RaZ7bmE8&callback=initMap"
+        async defer>
+        listarServicios();
+      </script>
+      <style>
+        html,
+        body {
+          height: 100%;
+          margin: 0;
+          padding: 0;
+        }
+
+        #map {
+          float: left;
+          width: 100%;
+          height: 400px;
+        }
+      </style>
+      <ons-toolbar>
+        <div class="left">
+          <ons-toolbar-button onclick="fn.open()">
+            <ons-icon icon="md-menu"></ons-icon>
+          </ons-toolbar-button>
+        </div>
+        <div class="center">
+          Buscar taller
+        </div>
+      </ons-toolbar>
+
+      <div id="contenido center">
+        <!-- mapa -->
+        <div id="map">
+        </div>
+        <!-- select servicio -->
+        <ons-select class="select" onchange="cargarTalleres(event)">
+          <select class="select-input" id="servicios"></select>
+        </ons-select>
+
+        <!-- talleres seleccionados -->
+        <div id="talleres"></div>
+      </div>
+    </ons-page>
+  </template>
+
+  <!-- listado mantenimientos -->
+
+  <template id="listarMant.html">
+    <ons-page>
+      <ons-toolbar>
+        <div class="left">
+          <ons-toolbar-button onclick="fn.open()">
+            <ons-icon icon="md-menu"></ons-icon>
+          </ons-toolbar-button>
+        </div>
+        <div class="center">
+          Listado de mantenimientos
+        </div>
+      </ons-toolbar>
+
+      <div id="contenido" style="text-align: center; opacity: 0.6; padding-top: 20px;">
+        <!-- agregar listado -->
+        <p>ddl</p>
+        <ons-fab position="bottom right" onclick="agregarMantenimiento()">
+          <ons-icon icon="md-plus"></ons-icon>
+        </ons-fab>
+      </div>
+    </ons-page>
+  </template>
+
+  <!-- acerca -->
+  <template id="principal.html">
+    <ons-page>
+      <ons-toolbar>
+        <div class="left">
+          <ons-toolbar-button onclick="fn.open()">
+            <ons-icon icon="md-menu"></ons-icon>
+          </ons-toolbar-button>
+        </div>
+        <div class="center">
+          Bienvenido
+        </div>
+      </ons-toolbar>
+      <div class="center">
+        <p>Selección de funcionalidades</p>
+
+        <ons-button modifier="large" style="margin-top:15px" onclick="fn.load('nuevoVehiculo.html')">Alta Vehículo</ons-button>
+        <ons-button modifier="large" style="margin-top:15px" onclick="fn.load('buscarTaller.html')">Búsqueda Talleres</ons-button>
+        <ons-button modifier="large" style="margin-top:15px" onclick="fn.load('listarMant.html')">Listado
+          Mantenimientos</ons-button>
+        <ons-button modifier="large--quiet" onclick="logout()">LOGOUT</ons-button>
+        <p id="mensaje"></p>
+      </div>
+    </ons-page>
+  </template>
+</body>
+
 </html>
