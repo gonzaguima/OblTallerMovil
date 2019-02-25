@@ -16,7 +16,7 @@
 <body>
   <!-- menu -->
   <ons-splitter>
-    <ons-splitter-side id="menu" side="left" width="220px" collapse swipeable>
+    <ons-splitter-side id="menu" side="left" width="220px" collapse>
       <ons-page>
         <ons-list>
           <ons-list-item onclick="fn.load('principal.html')" tappable>
@@ -165,7 +165,9 @@
         </div>
         <!-- select servicio -->
         <ons-select class="select" onchange="cargarTalleres(event)">
-          <select class="select-input" id="servicios"></select>
+          <select class="select-input" id="servicios">
+            <option value="">Seleccione un Servicio</option>
+          </select>
         </ons-select>
 
         <!-- talleres seleccionados -->
@@ -178,6 +180,9 @@
 
   <template id="listarMant.html">
     <ons-page>
+      <script>
+        ons.ready(buscarVehiculos());
+      </script>
       <ons-toolbar>
         <div class="left">
           <ons-toolbar-button onclick="fn.open()">
@@ -192,6 +197,17 @@
       <div id="contenido" style="text-align: center; opacity: 0.6; padding-top: 20px;">
         <!-- agregar listado -->
         <p>ddl</p>
+
+        <ons-select class="select" >
+            <select class="select-input" id="vehiculos">
+              <option value="">Seleccione un vehículo</option>
+            </select>
+          </ons-select>
+          <ons-select class="select">
+            <select class="select-input" id="favs">
+              <option value="">Seleccione un taller</option>
+            </select>
+          </ons-select>
         <ons-fab position="bottom right" onclick="agregarMantenimiento()">
           <ons-icon icon="md-plus"></ons-icon>
         </ons-fab>

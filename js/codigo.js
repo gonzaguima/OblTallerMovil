@@ -266,16 +266,19 @@ function cargarTalleres() {
   });
 }
 
+//onclick="return agregarFav(\'' + r.id + '\',\'' + r.descripcion + '\')"
+//onclick="agregarFav('+ r.id , +  r.descripcion +')"
 //CORRECTO MOSTRAR TALLERES
 function mostrarTalleres(response) {
   $("#talleres").html("");
   borrarMarcadores();
   response.description.forEach(function (r, i) {
     $("#talleres").append(
-      "<h3>" + r.descripcion + "</h3>" +
+      "<span style='font-size:1.5em; color:blue;'>" + r.descripcion + "</span>" + "<br />" +
       '<img src="http://images.marcelocaiafa.com/' + r.imagen + '" style="height:100px; width:auto;" alt="imagen">' +
       "<p> Dirección: " + r.direccion + "</p>" +
       "<p> Teléfono: " + r.telefono + "</p>" +
+      '<ons-button modifier="outline light" onclick="return agregarFav(\'' + r.id + '\',\'' + r.descripcion + '\')">' + 'Fav <span><i class="far fa-star" ></i></span></ons-button>' +
       "<hr>"
     );
     var lat = parseFloat(r.lat);
@@ -299,6 +302,8 @@ function mostrarTalleres(response) {
   }
   map.fitBounds(latlngbounds);
 }
+
+
 //ERROR CARGA TALLERES
 function errorTalleres() {
   console.log("error carga talleres");
@@ -314,7 +319,7 @@ function borrarMarcadores() {
 
 //MOSTRAR RUTA
 function mostrarRuta(mlat, mlng) {
-  console.log("entra " + mlat+ " " +  mlng);
+  console.log("entra " + mlat + " " + mlng);
   directionDisplay = new google.maps.DirectionsRenderer();
   directionService = new google.maps.DirectionsService();
 
@@ -335,5 +340,80 @@ function mostrarRuta(mlat, mlng) {
     }
   })
   directionDisplay.setMap(map);
+}
 
+//AGREGAR TALLER FAVORITO
+function agregarFav(id, nombre) {
+  console.log("fav");
+  var idTaller = id;
+  var nombreTaller = nombre;
+  db.transaction(function (tx) {
+    tx.executeSql('INSERT INTO favoritos (id , nombre) VALUES (?, ?)', [idTaller, nombreTaller]);
+  });
+}
+
+//CREA BASE DE DATOS PARA FAVORITOS
+$(document).ready(function () {
+  db = window.openDatabase("bdd", "1.0", "favoritos", 1024 * 1024 * 5);
+  db.transaction(function (tx) {
+    tx.executeSql('CREATE TABLE IF NOT EXISTS favoritos(id int PRIMARY KEY NOT NULL UNIQUE, nombre string)');
+  });
+})
+
+//RECUPERA FAVORITOS
+function verFav() {
+  console.log("verfav");
+
+  db.transaction(function (tx) {
+    tx.executeSql('SELECT DISTINCT id, nombre FROM favoritos', [], function (tx, results) {
+      if (results.rows.length > 0) {
+        for (var i = 0; i < results.rows.length; i++) {
+          console.log(results.rows.item(i));
+          $("#favs").append(
+            '<option value="' + results.rows.item(i).id + '">' + results.rows.item(i).nombre + '</option>')
+        }
+      } else {
+        console.log("favoritos vacios")
+      }
+    });
+    });
+  };
+
+
+//VEHICULOS DE USUARIO
+function buscarVehiculos() {
+  var key = sessionStorage.getItem('key')
+  var logueado = sessionStorage.getItem('logueado');
+  var q = "http://api.marcelocaiafa.com/vehiculo/?usuario=" + logueado;
+  $.ajax({
+    url: q,
+    type: "GET",
+    headers: {
+      Authorization: key
+    },
+    success: mostrarVehiculos,
+    error: errorMostrarVeh,
+  });
+}
+
+//MOSTRAR VEHICULOS
+function mostrarVehiculos(response) {
+  console.log(response);
+
+  response.description.forEach(function (r, i) {
+    var vId = r.id;
+    var vMat = r.matricula;
+    var vDesc = r.descripcion;
+    $("#vehiculos").append(
+      '<option value=\'' + vId + '\'>' + r.matricula + " - " + r.descripcion + '</option>'
+    );
+    console.log(vId + "" + vMat + "" + vDesc);
+  });
+  verFav();
+}
+
+//ERROR MOSTRAR VEHICULOS
+
+function errorMostrarVeh(response) {
+  console.log("error");
 }
