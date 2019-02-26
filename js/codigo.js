@@ -9,7 +9,7 @@ function login() {
   };
   var q = JSON.stringify(query);
 
-  if (email != "" && pass != "") {
+  if (email != "" || pass != "") {
     //login en servidor e ingresar
     $.ajax({
       url: "http://api.marcelocaiafa.com/login",
@@ -38,8 +38,8 @@ function correctoLogin(response) {
 //LOGIN INCORRECTO
 //AGREGAR CASOS DE ERROR
 function errorLogin(response) {
-  mensaje = "Email o Contraseña no válidos";
-  $("#mensaje").text(mensaje);
+
+  $("#mensaje").text(response.responseJSON.descripcion);
 }
 
 //CREAR USUARIO
@@ -55,7 +55,7 @@ function nuevoUsuario() {
   };
   var q = JSON.stringify(query);
 
-  if (email != "" && tel != "" && pass != "") {
+  if (email != "" || tel != "" || pass != "") {
     //verificar no existe, crear nuevo y loguearlo
     //desactivar acceso a otras secciones por el menu
     $.ajax({
@@ -84,8 +84,7 @@ function correctoUsuario(response) {
 //USUARIO INCORRECTO
 //AGREGAR CASOS DE ERROR
 function errorUsuario(response) {
-  mensaje = "Email ya se encuentra registrado";
-  $("#mensaje").text(mensaje);
+  $("#mensaje").text(response.responseJSON.descripcion);
 }
 
 //REGISTRAR NUEVO VEHICULO
@@ -100,7 +99,7 @@ function agregarVehiculo() {
     usuario: logueado
   };
   var q = JSON.stringify(query);
-  if (matricula != "" && descripcion != "") {
+  if (matricula != "" || descripcion != "") {
     var key = sessionStorage.getItem('key');
     $.ajax({
       url: "http://api.marcelocaiafa.com/vehiculo",
@@ -119,13 +118,13 @@ function agregarVehiculo() {
 }
 
 //CORRECTO VEHICULO
-function correctoVehiculo() {
+function correctoVehiculo(response) {
   $("#mensaje").text("El vehículo fue agregado correctamente");
 }
 
 //ERROR VEHICULO
-function errorVehiculo() {
-  $("#mensaje").text("El vehículo no se pudo agregar");
+function errorVehiculo(response) {
+  $("#mensaje").text(response.responseJSON.descripcion);
 }
 
 //LOGOUT
@@ -149,8 +148,8 @@ function correctoLogout() {
 }
 
 //ERROR LOGOUT
-function errorLogout() {
-  $("#mensaje").text("Ocurrió un error al cerrar sesión");
+function errorLogout(response) {
+  $("#mensaje").text(response.responseJSON.descripcion);
 }
 
 //MENU
@@ -190,7 +189,10 @@ function correctoServicios(response) {
     var servId = r.id;
     var servNom = r.nombre;
     $("#servicios").append('<option value=\'' + servId + '\'>' + servNom + '</option>');
-    todosServicios.push({servId,servNom} );
+    todosServicios.push({
+      servId,
+      servNom
+    });
   });
 }
 //ERROR CARGA SERVICIOS
@@ -246,16 +248,16 @@ function agregarEvento(marker) {
   var infowindow = new google.maps.InfoWindow({
     content: "<h4>" + marker.getTitle() + "</h4>" + "<br />" +
       '<ons-button modifier="material" onclick="mostrarRuta(' + marker.getPosition().lat() + "," + marker.getPosition().lng() + ')">IR</ons-button>'
-});
+  });
 
   marker.addListener('click', function () {
     infowindow.open(marker.get('map'), marker);
   });
 }
-
+var sel;
 //CARGAR TALLERES FILTRADOS
 function cargarTalleres() {
-  var sel = $("#servicios").val();
+  sel = $("#servicios").val();
   var key = sessionStorage.getItem('key')
   var q = "http://api.marcelocaiafa.com/taller/?servicio=" + sel;
   $.ajax({
@@ -280,7 +282,7 @@ function mostrarTalleres(response) {
       "<p> Dirección: " + r.direccion + "</p>" +
       "<p> Teléfono: " + r.telefono + "</p>" +
       '<ons-button modifier="outline light" onclick="return agregarFav(\'' + r.id + '\',\'' + r.descripcion + '\')">' + 'Fav <span><i class="far fa-star" ></i></span></ons-button>' +
-      '<ons-button modifier="material" onclick="nuevoMant('+ r.id+')">Agregar Mantenimiento</ons-button>' +
+      '<ons-button modifier="material" onclick="showTemplateDialog(\'' + r.id + '\',\'' + r.descripcion + '\')">Agregar Mantenimiento</ons-button>' +
       "<hr>"
     );
     var lat = parseFloat(r.lat);
@@ -414,9 +416,10 @@ function mostrarVehiculos(response) {
   verFav();
 }
 
-function mantReady(){
+function mantReady() {
   buscarVehiculos();
   listarServicios();
+  verFav();
 }
 
 //ERROR MOSTRAR VEHICULOS
@@ -424,79 +427,30 @@ function errorMostrarVeh(response) {
   console.log("error");
 }
 
-/* //BUSCAR SERVICIOS DE TALLER
-function serviciosDeTaller(){
-  listarServicios();
-  var key = sessionStorage.getItem('key')
-  console.log(todosServicios.length);
-  for(var i = 0; i <= todosServicios.length; i++){
-       $.ajax({
-      url: "http://api.marcelocaiafa.com/taller/?servicio=" + parseInt(todosServicios[i].servId),
-      type: "GET",
-      headers: {
-        Authorization: key
-      },
-      success: servTaller,
-      error: errorServTaller
-    });
-
-  }
-
-}
-
-var todosTalleres = [];
-//CORRECTO SERVICIOS DE TALLER
-function servTaller(response){
-  console.log(response);
-  todosTalleres.push(response);
-}
-
-function juntarServicios(){
-  var servPorTaller = [];
-  for(var x = 0; x <= todosServicios.length; x++ ){
-    var serv = todosServicios[x].servNom;
-    for(var m = 0; m <= todosTalleres.length; m++ ){
-      var tall = response;
-    }
-    servPorTaller.push(serv, tall);
-  }
-
-  console.log(servPorTaller);
-}
-
-
-
-//ERROR SERVICIOS DE TALLER
-function errorServTaller(response){
-  console.log("error");
-}*/
-
 //NUEVO MANTENIMIENTO MAPA
-function nuevoMant(e){
-  console.log(e);
-  var sel = $("#servicios").val();
-  fn.load('agregarMant.html');
+function nuevoMant() {
   var key = sessionStorage.getItem('key');
   var agrVeh = $("#vehiculos").val();
   var agrSer = sel;
   var agrDes = $("#desc").val();
-  var agrTall = e;
-  var agrKm  = $("#km").val();
+  var agrTall = $("#idtall").text();
+  console.log($("#idtall").text());
+  var agrKm = $("#km").val();
   var agrCosto = $("#costo").val();
   var agrFecha = new Date(Date.now()).toLocaleString();
-  if(agrVeh != "Seleccione un vehículo" && agrSer != "Seleccione un servicio" && agrTall != "Seleccione un taller"  && agrDes != "" && agrKm != "" && agrCosto != ""){
+  if (agrVeh != "Seleccione un vehículo" || agrDes != "" || agrKm != "" || agrCosto != "") {
     $.ajax({
       url: "http://api.marcelocaiafa.com/mantenimiento",
       type: "POST",
       dataType: "JSON",
-      data:  JSON.stringify({
+      data: JSON.stringify({
         vehiculo: agrVeh,
         descripcion: agrDes,
         fecha: agrFecha,
-        servicio:agrSer,
+        servicio: agrSer,
         kilometraje: agrKm,
         costo: agrCosto,
-        taller:agrTall,
+        taller: agrTall
       }),
       headers: {
         Authorization: key
@@ -504,53 +458,85 @@ function nuevoMant(e){
       success: correctoMant,
       error: errorMant
     });
-  }else{
-    $("#mensaje").text("Ingrese todos los datos");
-  }
- }
-//NUEVO MANTENIMIENTO FULL
-function agregarMantenimiento(){
-  var key = sessionStorage.getItem('key');
-  var agrVeh = $("#vehiculos").val();
-  var agrSer = $("#servicios").val();
-  var agrDes = $("#desc").val();
-  var agrTall = $("#favs").val();
-  var agrKm  = $("#km").val();
-  var agrCosto = $("#costo").val();
-  var agrFecha = new Date(Date.now()).toLocaleString();
-  if(agrVeh != "Seleccione un vehículo" && agrSer != "Seleccione un servicio" && agrTall != "Seleccione un taller"  && agrDes != "" && agrKm != "" && agrCosto != ""){
-    $.ajax({
-      url: "http://api.marcelocaiafa.com/mantenimiento",
-      type: "POST",
-      dataType: "JSON",
-      data:  JSON.stringify({
-        vehiculo: agrVeh,
-        descripcion: agrDes,
-        fecha: agrFecha,
-        servicio:agrSer,
-        kilometraje: agrKm,
-        costo: agrCosto,
-        taller:agrTall,
-      }),
-      headers: {
-        Authorization: key
-      },
-      success: correctoMant,
-      error: errorMant
-    });
-  }else{
+  } else {
     $("#mensaje").text("Ingrese todos los datos");
   }
 }
-
-//CORRECTO MANT
-function correctoMant(response){
+//CORRECTOMANT
+function correctoMant(response) {
   console.log(response);
   $("#mensaje").text("El servicio se agregó correctamente");
 }
 
 //ERROR MANT
-function errorMant(response){
-  console.log(response);
-  $("#mensaje").text("El servicio no se pudo agregar");
+function errorMant(response) {
+  console.log(response.responseJSON.descripcion);
+  $("#mensaje").text(response.responseJSON.descripcion);
+}
+
+
+//MOSTRAR DIALOG
+var showTemplateDialog = function (id, desc) {
+  var dialog = document.getElementById('dialog');
+
+  if (dialog) {
+    dialog.show();
+  } else {
+    ons.createElement('dialog.html', {
+        append: true
+      })
+      .then(function (dialog) {
+        dialog.show();
+        buscarVehiculos();
+        $("#idtall").html(id);
+        $("#tallSelecc").html(desc);
+        todosServicios.forEach(s => {
+          if (sel == s.servId) {
+            $("#servSelecc").html(s.servNom);
+          }
+        });
+      })
+  }
+}
+//OCULTAR DIALOG
+var hideDialog = function (id) {
+  document
+    .getElementById(id)
+    .hide();
+};
+
+
+//NUEVO MANTENIMIENTO FULL
+function agregarMantenimiento() {
+  var key = sessionStorage.getItem('key');
+  var agrVeh = $("#vehiculos").val();
+  var agrSer = $("#servicios").val();
+  var agrDes = $("#desc").val();
+  var agrTall = $("#favs").val();
+  var agrKm = $("#km").val();
+  var agrCosto = $("#costo").val();
+  var agrFecha = new Date(Date.now()).toLocaleString();
+  if (agrVeh != "Seleccione un vehículo" || agrSer != "Seleccione un servicio" || agrTall != "Seleccione un taller" || agrDes != "" || agrKm != "" || agrCosto != "") {
+    $.ajax({
+      url: "http://api.marcelocaiafa.com/mantenimiento",
+      type: "POST",
+      dataType: "JSON",
+      data: JSON.stringify({
+        vehiculo: agrVeh,
+        descripcion: agrDes,
+        fecha: agrFecha,
+        servicio: agrSer,
+        kilometraje: agrKm,
+        costo: agrCosto,
+        taller: agrTall,
+      }),
+      headers: {
+        Authorization: key
+      },
+      success: correctoMant,
+      error: errorMant
+    });
+  } else {
+    $("#mensaje").text("Ingrese todos los datos");
+  }
 }

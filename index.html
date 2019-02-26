@@ -179,6 +179,42 @@
     </ons-page>
   </template>
 
+
+  <!-- agregar mant mapa -->
+  <template id="dialog.html">
+    <ons-dialog id="dialog">
+      <div style="text-align: center; padding: 10px;">
+        <p>Seleccione un vehículo</p>
+        <ons-select class="select">
+          <select class="select-input" id="vehiculos">
+            <option value="">Seleccione un vehículo</option>
+          </select>
+        </ons-select>
+        <br>
+        <!--servicio seleccionado-->
+        <p>Servicio seleccionado: </p><span id="servSelecc"></span>
+
+        <!-- descripción del servicio -->
+        <p>Descripción del servicio</p>
+        <textarea class="textarea" rows="3" placeholder="Descripción de servicio" id="desc"></textarea>
+        <!-- taller seleccionado -->
+        <p>Taller seleccionado: <span id="idtall"></span> - <span id="tallSelecc"></span></p>
+        <!-- km -->
+        <p>Kilometraje al realizarlo</p>
+        <ons-input modifier="underbar" placeholder="Kilometraje" id="km" type="text"></ons-input><br />
+        <!-- costo -->
+        <p>Costo en dólares</p>
+        <ons-input modifier="underbar" placeholder="Costo" id="costo" type="text"></ons-input><br />
+        <br>
+        <p id="mensaje"></p>
+        <ons-button onclick="nuevoMant()">Agregar</ons-button>
+        <ons-button modifier="outline light" onclick="hideDialog('dialog')">Cerrar</ons-button>
+        </p>
+      </div>
+    </ons-dialog>
+  </template>
+
+
   <!-- listado mantenimientos -->
   <template id="listarMant.html">
     <ons-page>
@@ -240,7 +276,7 @@
         </ons-select>
         <br>
         <!--select servicios -->
-        <ons-select class="select" >
+        <ons-select class="select">
           <select class="select-input" id="servicios">
             <option value="">Seleccione un servicio</option>
           </select>
@@ -255,8 +291,8 @@
             <option value="">Seleccione un taller</option>
           </select>
         </ons-select>
-          <!-- volver a mapa -->
-          <ons-button modifier="outline light" onclick="fn.load('buscarTaller.html');">O agregue uno a favoritos</ons-button>
+        <!-- volver a mapa -->
+        <ons-button modifier="outline light" onclick="fn.load('buscarTaller.html');">O agregue uno a favoritos</ons-button>
         <!-- km -->
         <h3>Kilometraje al realizarlo</h3>
         <ons-input modifier="underbar" placeholder="Kilometraje" id="km" type="text"></ons-input><br />
@@ -264,7 +300,7 @@
         <h3>Costo en dólares</h3>
         <ons-input modifier="underbar" placeholder="Costo" id="costo" type="text"></ons-input><br />
         <br>
-      <p id="mensaje"></p>
+        <p id="mensaje"></p>
         <!-- enviar -->
         <ons-fab position="bottom right" onclick="agregarMantenimiento()">
           <ons-icon icon="md-plus"></ons-icon>
@@ -291,7 +327,8 @@
 
         <ons-button modifier="large" style="margin-top:15px" onclick="fn.load('nuevoVehiculo.html')">Alta Vehículo</ons-button>
         <ons-button modifier="large" style="margin-top:15px" onclick="fn.load('buscarTaller.html')">Búsqueda Talleres</ons-button>
-        <ons-button modifier="large" style="margin-top:15px" onclick="fn.load('agregarMant.html')">Agregar mantenimiento</ons-button>
+        <ons-button modifier="large" style="margin-top:15px" onclick="fn.load('agregarMant.html')">Agregar
+          mantenimiento</ons-button>
         <ons-button modifier="large" style="margin-top:15px" onclick="fn.load('listarMant.html')">Listado
           Mantenimientos</ons-button>
         <ons-button modifier="large--quiet" onclick="logout()">LOGOUT</ons-button>
