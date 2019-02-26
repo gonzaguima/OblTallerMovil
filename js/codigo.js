@@ -128,9 +128,6 @@ function errorVehiculo() {
   $("#mensaje").text("El vehículo no se pudo agregar");
 }
 
-//AGREGAR MANTENIMIENTO
-function agregarMantenimiento() {}
-
 //LOGOUT
 function logout() {
   var key = sessionStorage.getItem('key')
@@ -183,11 +180,17 @@ function listarServicios() {
   console.log("entra");
 }
 
+
+var todosServicios = [];
 //CARGA SERVICIOS
 function correctoServicios(response) {
+  todosServicios = [];
   console.log("carga de servicios ok")
   response.description.forEach(function (r, i) {
-    $("#servicios").append('<option value=\'' + r.id + '\'>' + r.nombre + '</option>');
+    var servId = r.id;
+    var servNom = r.nombre;
+    $("#servicios").append('<option value=\'' + servId + '\'>' + servNom + '</option>');
+    todosServicios.push({servId,servNom} );
   });
 }
 //ERROR CARGA SERVICIOS
@@ -243,7 +246,7 @@ function agregarEvento(marker) {
   var infowindow = new google.maps.InfoWindow({
     content: "<h4>" + marker.getTitle() + "</h4>" + "<br />" +
       '<ons-button modifier="material" onclick="mostrarRuta(' + marker.getPosition().lat() + "," + marker.getPosition().lng() + ')">IR</ons-button>'
-  });
+});
 
   marker.addListener('click', function () {
     infowindow.open(marker.get('map'), marker);
@@ -266,8 +269,6 @@ function cargarTalleres() {
   });
 }
 
-//onclick="return agregarFav(\'' + r.id + '\',\'' + r.descripcion + '\')"
-//onclick="agregarFav('+ r.id , +  r.descripcion +')"
 //CORRECTO MOSTRAR TALLERES
 function mostrarTalleres(response) {
   $("#talleres").html("");
@@ -279,6 +280,7 @@ function mostrarTalleres(response) {
       "<p> Dirección: " + r.direccion + "</p>" +
       "<p> Teléfono: " + r.telefono + "</p>" +
       '<ons-button modifier="outline light" onclick="return agregarFav(\'' + r.id + '\',\'' + r.descripcion + '\')">' + 'Fav <span><i class="far fa-star" ></i></span></ons-button>' +
+      '<ons-button modifier="material" onclick="nuevoMant('+ r.id+')">Agregar Mantenimiento</ons-button>' +
       "<hr>"
     );
     var lat = parseFloat(r.lat);
@@ -370,14 +372,14 @@ function verFav() {
         for (var i = 0; i < results.rows.length; i++) {
           console.log(results.rows.item(i));
           $("#favs").append(
-            '<option value="' + results.rows.item(i).id + '">' + results.rows.item(i).nombre + '</option>')
+            '<option value="' + results.rows.item(i).id + '">' + results.rows.item(i).nombre + '</option>');
         }
       } else {
         console.log("favoritos vacios")
       }
     });
-    });
-  };
+  });
+};
 
 
 //VEHICULOS DE USUARIO
@@ -412,8 +414,143 @@ function mostrarVehiculos(response) {
   verFav();
 }
 
-//ERROR MOSTRAR VEHICULOS
+function mantReady(){
+  buscarVehiculos();
+  listarServicios();
+}
 
+//ERROR MOSTRAR VEHICULOS
 function errorMostrarVeh(response) {
   console.log("error");
+}
+
+/* //BUSCAR SERVICIOS DE TALLER
+function serviciosDeTaller(){
+  listarServicios();
+  var key = sessionStorage.getItem('key')
+  console.log(todosServicios.length);
+  for(var i = 0; i <= todosServicios.length; i++){
+       $.ajax({
+      url: "http://api.marcelocaiafa.com/taller/?servicio=" + parseInt(todosServicios[i].servId),
+      type: "GET",
+      headers: {
+        Authorization: key
+      },
+      success: servTaller,
+      error: errorServTaller
+    });
+
+  }
+
+}
+
+var todosTalleres = [];
+//CORRECTO SERVICIOS DE TALLER
+function servTaller(response){
+  console.log(response);
+  todosTalleres.push(response);
+}
+
+function juntarServicios(){
+  var servPorTaller = [];
+  for(var x = 0; x <= todosServicios.length; x++ ){
+    var serv = todosServicios[x].servNom;
+    for(var m = 0; m <= todosTalleres.length; m++ ){
+      var tall = response;
+    }
+    servPorTaller.push(serv, tall);
+  }
+
+  console.log(servPorTaller);
+}
+
+
+
+//ERROR SERVICIOS DE TALLER
+function errorServTaller(response){
+  console.log("error");
+}*/
+
+//NUEVO MANTENIMIENTO MAPA
+function nuevoMant(e){
+  console.log(e);
+  var sel = $("#servicios").val();
+  fn.load('agregarMant.html');
+  var key = sessionStorage.getItem('key');
+  var agrVeh = $("#vehiculos").val();
+  var agrSer = sel;
+  var agrDes = $("#desc").val();
+  var agrTall = e;
+  var agrKm  = $("#km").val();
+  var agrCosto = $("#costo").val();
+  var agrFecha = new Date(Date.now()).toLocaleString();
+  if(agrVeh != "Seleccione un vehículo" && agrSer != "Seleccione un servicio" && agrTall != "Seleccione un taller"  && agrDes != "" && agrKm != "" && agrCosto != ""){
+    $.ajax({
+      url: "http://api.marcelocaiafa.com/mantenimiento",
+      type: "POST",
+      dataType: "JSON",
+      data:  JSON.stringify({
+        vehiculo: agrVeh,
+        descripcion: agrDes,
+        fecha: agrFecha,
+        servicio:agrSer,
+        kilometraje: agrKm,
+        costo: agrCosto,
+        taller:agrTall,
+      }),
+      headers: {
+        Authorization: key
+      },
+      success: correctoMant,
+      error: errorMant
+    });
+  }else{
+    $("#mensaje").text("Ingrese todos los datos");
+  }
+ }
+//NUEVO MANTENIMIENTO FULL
+function agregarMantenimiento(){
+  var key = sessionStorage.getItem('key');
+  var agrVeh = $("#vehiculos").val();
+  var agrSer = $("#servicios").val();
+  var agrDes = $("#desc").val();
+  var agrTall = $("#favs").val();
+  var agrKm  = $("#km").val();
+  var agrCosto = $("#costo").val();
+  var agrFecha = new Date(Date.now()).toLocaleString();
+  if(agrVeh != "Seleccione un vehículo" && agrSer != "Seleccione un servicio" && agrTall != "Seleccione un taller"  && agrDes != "" && agrKm != "" && agrCosto != ""){
+    $.ajax({
+      url: "http://api.marcelocaiafa.com/mantenimiento",
+      type: "POST",
+      dataType: "JSON",
+      data:  JSON.stringify({
+        vehiculo: agrVeh,
+        descripcion: agrDes,
+        fecha: agrFecha,
+        servicio:agrSer,
+        kilometraje: agrKm,
+        costo: agrCosto,
+        taller:agrTall,
+      }),
+      headers: {
+        Authorization: key
+      },
+      success: correctoMant,
+      error: errorMant
+    });
+  }else{
+    $("#mensaje").text("Ingrese todos los datos");
+  }
+}
+
+//CORRECTO MANT
+function correctoMant(response){
+  console.log(response);
+  $("#mensaje").text("El servicio se agregó correctamente");
+}
+
+//ERROR MANT
+function errorMant(response){
+  console.log(response);
+  $("#mensaje").text("El servicio no se pudo agregar");
 }

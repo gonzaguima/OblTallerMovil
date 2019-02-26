@@ -28,6 +28,9 @@
           <ons-list-item onclick="fn.load('buscarTaller.html')" tappable>
             Buscar talleres
           </ons-list-item>
+          <ons-list-item onclick="fn.load('agregarMant.html')" tappable>
+            Agregar mantenimiento
+          </ons-list-item>
           <ons-list-item onclick="fn.load('listarMant.html')" tappable>
             Ver mantenimientos
           </ons-list-item>
@@ -177,7 +180,6 @@
   </template>
 
   <!-- listado mantenimientos -->
-
   <template id="listarMant.html">
     <ons-page>
       <script>
@@ -198,16 +200,72 @@
         <!-- agregar listado -->
         <p>ddl</p>
 
+        <ons-select class="select">
+          <select class="select-input" id="vehiculos">
+            <option value="">Seleccione un vehículo</option>
+          </select>
+        </ons-select>
+
+        <ons-fab position="bottom right" onclick="agregarMantenimiento()">
+          <ons-icon icon="md-plus"></ons-icon>
+        </ons-fab>
+      </div>
+    </ons-page>
+  </template>
+
+
+  <!-- AGREGAR MANTENIMIENTO -->
+  <template id="agregarMant.html">
+    <ons-page>
+      <script>
+        ons.ready(mantReady());
+      </script>
+      <ons-toolbar>
+        <div class="left">
+          <ons-toolbar-button onclick="fn.open()">
+            <ons-icon icon="md-menu"></ons-icon>
+          </ons-toolbar-button>
+        </div>
+        <div class="center">
+          Agregar mantenimiento
+        </div>
+      </ons-toolbar>
+      <div id="contenido" style="text-align: center; opacity: 0.6; padding-top: 20px;">
+        <!-- seleccionar vehiculo -->
+        <h3>Seleccione un vehículo</h3>
+        <ons-select class="select">
+          <select class="select-input" id="vehiculos">
+            <option value="">Seleccione un vehículo</option>
+          </select>
+        </ons-select>
+        <br>
+        <!--select servicios -->
         <ons-select class="select" >
-            <select class="select-input" id="vehiculos">
-              <option value="">Seleccione un vehículo</option>
-            </select>
-          </ons-select>
-          <ons-select class="select">
-            <select class="select-input" id="favs">
-              <option value="">Seleccione un taller</option>
-            </select>
-          </ons-select>
+          <select class="select-input" id="servicios">
+            <option value="">Seleccione un servicio</option>
+          </select>
+        </ons-select>
+        <br>
+        <!-- descripción del servicio -->
+        <textarea class="textarea" rows="3" placeholder="Descripción de servicio" id="desc"></textarea>
+        <!-- seleccionar taller -->
+        <h3>Seleccione un taller favorito</h3>
+        <ons-select class="select">
+          <select class="select-input" id="favs">
+            <option value="">Seleccione un taller</option>
+          </select>
+        </ons-select>
+          <!-- volver a mapa -->
+          <ons-button modifier="outline light" onclick="fn.load('buscarTaller.html');">O agregue uno a favoritos</ons-button>
+        <!-- km -->
+        <h3>Kilometraje al realizarlo</h3>
+        <ons-input modifier="underbar" placeholder="Kilometraje" id="km" type="text"></ons-input><br />
+        <!-- costo -->
+        <h3>Costo en dólares</h3>
+        <ons-input modifier="underbar" placeholder="Costo" id="costo" type="text"></ons-input><br />
+        <br>
+      <p id="mensaje"></p>
+        <!-- enviar -->
         <ons-fab position="bottom right" onclick="agregarMantenimiento()">
           <ons-icon icon="md-plus"></ons-icon>
         </ons-fab>
@@ -233,6 +291,7 @@
 
         <ons-button modifier="large" style="margin-top:15px" onclick="fn.load('nuevoVehiculo.html')">Alta Vehículo</ons-button>
         <ons-button modifier="large" style="margin-top:15px" onclick="fn.load('buscarTaller.html')">Búsqueda Talleres</ons-button>
+        <ons-button modifier="large" style="margin-top:15px" onclick="fn.load('agregarMant.html')">Agregar mantenimiento</ons-button>
         <ons-button modifier="large" style="margin-top:15px" onclick="fn.load('listarMant.html')">Listado
           Mantenimientos</ons-button>
         <ons-button modifier="large--quiet" onclick="logout()">LOGOUT</ons-button>
