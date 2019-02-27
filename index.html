@@ -233,18 +233,17 @@
       </ons-toolbar>
 
       <div id="contenido" style="text-align: center; opacity: 0.6; padding-top: 20px;">
-        <!-- agregar listado -->
-        <p>ddl</p>
-
-        <ons-select class="select">
+        <!-- seleccionar vehiculo -->
+        <ons-select class="select" onchange="pedirMant(event)">
           <select class="select-input" id="vehiculos">
             <option value="">Seleccione un vehículo</option>
           </select>
         </ons-select>
+        <!-- mostrar servicios -->
+        <ons-list id="mostrarServ">
 
-        <ons-fab position="bottom right" onclick="agregarMantenimiento()">
-          <ons-icon icon="md-plus"></ons-icon>
-        </ons-fab>
+        </ons-list>
+        <p id="total"></p>
       </div>
     </ons-page>
   </template>

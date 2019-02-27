@@ -366,13 +366,11 @@ $(document).ready(function () {
 
 //RECUPERA FAVORITOS
 function verFav() {
-  console.log("verfav");
 
   db.transaction(function (tx) {
     tx.executeSql('SELECT DISTINCT id, nombre FROM favoritos', [], function (tx, results) {
       if (results.rows.length > 0) {
         for (var i = 0; i < results.rows.length; i++) {
-          console.log(results.rows.item(i));
           $("#favs").append(
             '<option value="' + results.rows.item(i).id + '">' + results.rows.item(i).nombre + '</option>');
         }
@@ -399,19 +397,19 @@ function buscarVehiculos() {
     error: errorMostrarVeh,
   });
 }
-
+var vehUsu = [];
 //MOSTRAR VEHICULOS
 function mostrarVehiculos(response) {
+  vehUsu = [];
   console.log(response);
-
   response.description.forEach(function (r, i) {
+    vehUsu.push(r);
     var vId = r.id;
     var vMat = r.matricula;
     var vDesc = r.descripcion;
     $("#vehiculos").append(
       '<option value=\'' + vId + '\'>' + r.matricula + " - " + r.descripcion + '</option>'
     );
-    console.log(vId + "" + vMat + "" + vDesc);
   });
   verFav();
 }
@@ -462,10 +460,11 @@ function nuevoMant() {
     $("#mensaje").text("Ingrese todos los datos");
   }
 }
-//CORRECTOMANT
+//CORRECTO MANT
 function correctoMant(response) {
   console.log(response);
   $("#mensaje").text("El servicio se agregó correctamente");
+  diezMant();
 }
 
 //ERROR MANT
@@ -538,5 +537,92 @@ function agregarMantenimiento() {
     });
   } else {
     $("#mensaje").text("Ingrese todos los datos");
+  }
+}
+
+function pedirMant() {
+  var veh = $("#vehiculos").val();
+  mostrarServicios(veh);
+}
+
+//MOSTRAR MANTENIMIENTOS
+function mostrarServicios(a) {
+  var key = sessionStorage.getItem('key');
+  $.ajax({
+    url: "http://api.marcelocaiafa.com/mantenimiento",
+    type: "GET",
+    dataType: "JSON",
+    data: {
+      vehiculo: a,
+    },
+    headers: {
+      Authorization: key
+    },
+    success: correctoListado,
+    error: errorListado
+  });
+}
+var mantUsuario = 0;
+//CORRECTO LISTADO
+function correctoListado(response) {
+  console.log(response);
+
+  var gastado = 0;
+  if (response.description.length == 0) {
+    $("#msgListado").html("No hay registrado mantenimientos para este Vehiculo.")
+  } else {
+    response.description.forEach(function (e, i) {
+      mantUsuario++;
+      $("#mostrarServ").append(
+        '<ons-list-item expandable onclick="ampliarInfoMant(\'' + e.id + '\', \'#expandir' + e.id + '\')">' + e.descripcion + ' Fecha: ' + e.created + '<div class="expandable-content" id=\'expandir' + e.id + '\'></div></ons-list-item>');
+      var unServ = Number(e.costo);
+      gastado += unServ;
+    });
+  }
+  $("#total").html("En este vehículo se lleva gastado en mantenimiento $" + gastado);
+
+}
+//ERROR LISTADO
+function errorListado() {
+  console.log(response.responseJSON.descripcion)
+}
+
+//AMPLIAR INFO
+function ampliarInfoMant(idMantenimiento, parametro) {
+  var key = sessionStorage.getItem('key');
+  $.ajax({
+    url: "http://api.marcelocaiafa.com/mantenimiento",
+    type: "GET",
+    dataType: "JSON",
+    data: {
+      id: idMantenimiento,
+    },
+    headers: {
+      Authorization: key
+    },
+    success: function (response) {
+      var r = response.description.mantenimiento;
+      var s = response.description.servicio;
+      $(parametro).html("Fecha: " + r.created + "<br> Taller: " + r.taller + " <br> Servicio: " + s.nombre + "<br> Descripcion: " + s.descripcion + " <br> Precio: $" + r.costo);
+    },
+    error: errorAmpliacion
+  });
+}
+
+//ERROR AMPLIACION
+function errorAmpliacion(response) {
+  console.log(response.responseJSON.descripcion);
+}
+
+//10 MANTENIMIENTOS
+function diezMant() {
+  mantUsuario = 0;
+  console.log("contando...");
+  vehUsu.forEach(function (e, i) {
+    mostrarServicios(e.id);
+  });
+  if (mantUsuario = 10) {
+    navigator.vibrate([500, 200, 500]);
+    console.log("vibra!");
   }
 }
