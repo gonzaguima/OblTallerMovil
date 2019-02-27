@@ -603,7 +603,6 @@ var mantUsuario = 0;
 //CORRECTO LISTADO
 function correctoListado(response) {
   var gastado = 0;
-  $("#mostrarServ").empty();
   if (response.description.length == 0) {
     $("#msgListado").html(
       "No hay registrado mantenimientos para este Vehiculo."
